@@ -1,53 +1,45 @@
-#include <iostream>
-#include <cmath>
-using namespace std;
+#include <stdio.h>
+#include <math.h>
 
-const int MAX = 1024;
+char arr[1024][2048];
 
-char starGraph[MAX][2 * MAX];
-
-void func(int y, int x, int height)
+void func(int y, int x, int n)
 {
-	if (height == 1)
+	if (n == 1)
 	{
-		starGraph[y][x] = '*';
+		arr[y][x] = '*';
+		return;
+	}
+
+	int height = pow(2, n + 1) - 3;
+	int width = pow(2, n) - 1;
+
+	if (n % 2)
+	{
+		for (int i = 0; i < height; i++)
+			arr[y + width - 1][x + i] = '*';
+
+		for (int i = 0; i < width - 1; i++)
+		{
+			arr[y + i][x + height / 2 - i] = '*';
+			arr[y + i][x + height / 2 + i] = '*';
+		}
+
+		func(y + width / 2, x + pow(2, n - 1), n - 1);
 
 		return;
 	}
 
-	int row = pow(2, height + 1) - 3;
-	int col = pow(2, height) - 1;
+	for (int i = 0; i < height; i++)
+		arr[y][x + i] = '*';
 
-	if (height % 2)
+	for (int i = 1; i < width; i++)
 	{
-		for (int i = 0; i < row; i++)
-		{
-			starGraph[y + col - 1][x + i] = '*';
-		}
-
-		for (int i = 0; i < col - 1; i++)
-		{
-			starGraph[y + i][x + row / 2 - i] = '*';
-			starGraph[y + i][x + row / 2 + i] = '*';
-		}
-
-		func(y + col / 2, x + pow(2, height - 1), height - 1);
-
-		return;
+		arr[y + i][x + i] = '*';
+		arr[y + i][x + height - (i + 1)] = '*';
 	}
 
-	for (int i = 0; i < row; i++)
-	{
-		starGraph[y][x + i] = '*';
-	}
-
-	for (int i = 1; i < col; i++)
-	{
-		starGraph[y + i][x + i] = '*';
-		starGraph[y + i][x + row - (i + 1)] = '*';
-	}
-
-	func(y + 1, x + pow(2, height - 1), height - 1);
+	func(y + 1, x + pow(2, n - 1), n - 1);
 
 	return;
 
@@ -55,39 +47,31 @@ void func(int y, int x, int height)
 
 int main(void)
 {
-	int N;
-	cin >> N;
+	int n;
+	scanf("%d", &n);
 
-	func(0, 0, N);
+	func(0, 0, n);
 
-	int row = pow(2, N + 1) - 3;
-	int col = pow(2, N) - 1;
+	int height = pow(2, n + 1) - 3;
+	int width = pow(2, n) - 1;
 
-	for (int i = 0; i < col; i++)
+	for (int i = 0; i < width; i++)
 	{
-		if (N % 2)
+		if (n % 2)
 		{
-			for (int j = 0; j < row - col + (i + 1); j++)
+			for (int j = 0; j < height - width + (i + 1); j++)
 			{
-				char c = starGraph[i][j] == '*' ? '*' : ' ';
-
-				cout << c;
+				char c = arr[i][j] == '*' ? '*' : ' ';
+				printf("%c", c);
 			}
-
-			cout << "\n";
-
+			printf("\n");
 			continue;
 		}
-
-		for (int j = 0; j < row - i; j++)
+		for (int j = 0; j < height - i; j++)
 		{
-			char c = starGraph[i][j] == '*' ? '*' : ' ';
-
-			cout << c;
+			char c = arr[i][j] == '*' ? '*' : ' ';
+			printf("%c", c);
 		}
-
-		cout << "\n";
+		printf("\n");
 	}
-
-	return 0;
 }
