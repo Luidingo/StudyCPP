@@ -2,7 +2,7 @@
 
 using namespace std;
 
-long long factorial(long long num)
+long long factorial(int num)
 {
     if (num == 1)
         return num;
@@ -12,7 +12,7 @@ long long factorial(long long num)
 
 int main() 
 {
-    long long n;
+    int n;
     cin >> n;
     if (n != 0)
         cout << factorial(n);
